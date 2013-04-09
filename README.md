@@ -17,73 +17,48 @@ One the plugin has been installed, it may be enabled inside your Gruntfile with 
 grunt.loadNpmTasks('grunt-template-html');
 ```
 
-## The "template_html" task
+## The "template" task
 
 ### Overview
-In your project's Gruntfile, add a section named `template_html` to the data object passed into `grunt.initConfig()`.
+In your project's Gruntfile, add a section named `template` to the data object passed into `grunt.initConfig()`.
 
-```js
-grunt.initConfig({
-  template_html: {
-    options: {
-      // Task-specific options go here.
-    },
-    your_target: {
-      // Target-specific file lists and/or options go here.
-    },
-  },
-})
-```
 
 ### Options
 
-#### options.separator
-Type: `String`
-Default value: `',  '`
+#### engines
 
-A string value that is used to do something with whatever.
+#### cwd
 
-#### options.punctuation
-Type: `String`
-Default value: `'.'`
+#### partials
 
-A string value that is used to do something else with whatever else.
+#### data
+
 
 ### Usage Examples
 
-#### Default Options
-In this example, the default options are used to do something with whatever. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result would be `Testing, 1 2 3.`
-
 ```js
 grunt.initConfig({
-  template_html: {
-    options: {},
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
+  template: {
+    dev: {
+      engine: 'handlebars',
+      cwd: 'test/fixtures/',
+      partials: ['test/fixtures/modules/*.hbs'],
+      data: 'test/fixtures/data/data.json',
+      options: {
+      },
+      files: [
+        {
+          expand: true,     // Enable dynamic expansion.
+          cwd: 'test/fixtures',      // Src matches are relative to this path.
+          src: '*.hbs', // Actual pattern(s) to match.
+          dest: 'tmp/',   // Destination path prefix.
+          ext: '.html'  // Dest filepaths will have this extension.
+        }
+      ]
+    }
   },
 })
 ```
-
-#### Custom Options
-In this example, custom options are used to do something else with whatever else. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result in this case would be `Testing: 1 2 3 !!!`
-
-```js
-grunt.initConfig({
-  template_html: {
-    options: {
-      separator: ': ',
-      punctuation: ' !!!',
-    },
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
-  },
-})
-```
-
-## Contributing
-In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
 ## Release History
-_(Nothing yet)_
+0.1.0 - First Release

@@ -12,38 +12,43 @@ module.exports = function(grunt) {
 
   // Please see the Grunt documentation for more information regarding task
   // creation: http://gruntjs.com/creating-tasks
+  var consolidate = require('consolidate'),
+      _ = grunt.util._;
 
-  grunt.registerMultiTask('template_html', 'Your task description goes here.', function() {
+  grunt.registerMultiTask('template', 'Your task description goes here.', function() {
     // Merge task-specific and/or target-specific options with these defaults.
-    var options = this.options({
-      punctuation: '.',
-      separator: ', '
-    });
+    var done = this.async();
 
-    // Iterate over all specified file groups.
+    var data = this.data;
+    if (data.partials && data.cwd) {
+      var partials = grunt.file.expand(data.partials).map(function(filepath){
+        return filepath.replace(data.cwd, '').split('.')[0];
+      });
+      data.options.partials = _.extend(data.options.partials || {}, _.object(partials,partials));
+    }
+
+     if (data.data) {
+      data.options.data = _.extend(data.options.partials || {}, grunt.file.readJSON(data.data));
+     }
+
+    var i = 0, length = this.filesSrc.length;
     this.files.forEach(function(f) {
-      // Concat specified files.
-      var src = f.src.filter(function(filepath) {
-        // Warn on and remove invalid source files (if nonull was set).
-        if (!grunt.file.exists(filepath)) {
-          grunt.log.warn('Source file "' + filepath + '" not found.');
-          return false;
-        } else {
-          return true;
+      var dest = f.dest;
+      
+      consolidate[data.engine](f.src, data.options, function(err, html){
+        if (err)
+        {
+          grunt.log.error(err);
+          done(false);
         }
-      }).map(function(filepath) {
-        // Read file source.
-        return grunt.file.read(filepath);
-      }).join(grunt.util.normalizelf(options.separator));
 
-      // Handle options.
-      src += options.punctuation;
-
-      // Write the destination file.
-      grunt.file.write(f.dest, src);
-
-      // Print a success message.
-      grunt.log.writeln('File "' + f.dest + '" created.');
+        grunt.file.write(f.dest, html);
+        grunt.log.writeln("HTML written to '"+ f.dest +"'");
+        i++;
+        if (i === length){
+          done(true);
+        } 
+      });
     });
   });
 

@@ -29,23 +29,24 @@ module.exports = function(grunt) {
     },
 
     // Configuration to be run (and then tested).
-    template_html: {
-      default_options: {
+    template: {
+      dev: {
+        engine: 'handlebars',
+        cwd: 'test/fixtures/',
+        partials: ['test/fixtures/modules/*.hbs'],
+        data: 'test/fixtures/data/data.json',
         options: {
         },
-        files: {
-          'tmp/default_options': ['test/fixtures/testing', 'test/fixtures/123'],
-        },
-      },
-      custom_options: {
-        options: {
-          separator: ': ',
-          punctuation: ' !!!',
-        },
-        files: {
-          'tmp/custom_options': ['test/fixtures/testing', 'test/fixtures/123'],
-        },
-      },
+        files: [
+        {
+          expand: true,     // Enable dynamic expansion.
+          cwd: 'test/fixtures',      // Src matches are relative to this path.
+          src: '*.hbs', // Actual pattern(s) to match.
+          dest: 'tmp/',   // Destination path prefix.
+          ext: '.html'  // Dest filepaths will have this extension.
+        }
+      ]
+      }
     },
 
     // Unit tests.
@@ -65,7 +66,7 @@ module.exports = function(grunt) {
 
   // Whenever the "test" task is run, first clean the "tmp" dir, then run this
   // plugin's task(s), then test the result.
-  grunt.registerTask('test', ['clean', 'template_html', 'nodeunit']);
+  grunt.registerTask('test', ['clean', 'template', 'nodeunit']);
 
   // By default, lint and run all tests.
   grunt.registerTask('default', ['jshint', 'test']);
