@@ -25,15 +25,30 @@ In your project's Gruntfile, add a section named `template` to the data object p
 
 ### Options
 
-#### engines
+#### engine
 
+Template engine is supported by [Consolidate](https://github.com/visionmedia/consolidate.js)
+```js
+engine: 'handlebars'
+```
 #### cwd
 
+Path to template folder
+```js
+cwd: 'test/fixtures/'
+```
 #### partials
 
+Path to partials folders
+```js
+partials: ['test/fixtures/modules/*.hbs']
+```
 #### data
 
-
+Path to data file
+```js
+data: 'test/fixtures/data/data.json'
+```
 ### Usage Examples
 
 ```js
