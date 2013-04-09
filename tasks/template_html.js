@@ -28,7 +28,7 @@ module.exports = function(grunt) {
     }
 
      if (data.data) {
-      data.options.data = _.extend(data.options.partials || {}, grunt.file.readJSON(data.data));
+      data.options.data = _.extend(data.options.data || {}, grunt.file.readJSON(data.data));
      }
 
     var i = 0, length = this.filesSrc.length;
