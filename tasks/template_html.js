@@ -33,21 +33,22 @@ module.exports = function(grunt) {
 
     var i = 0, length = this.filesSrc.length;
     this.files.forEach(function(f) {
-      var dest = f.dest;
-      
-      consolidate[data.engine](f.src, data.options, function(err, html){
+      var dest = f.dest,
+          src = f.src[0];
+
+      consolidate[data.engine](src, data.options, function(err, html){
         if (err)
         {
           grunt.log.error(err);
           done(false);
         }
 
-        grunt.file.write(f.dest, html);
-        grunt.log.writeln("HTML written to '"+ f.dest +"'");
+        grunt.file.write(dest, html);
+        grunt.log.writeln("HTML written to '"+ dest +"'");
         i++;
         if (i === length){
           done(true);
-        } 
+        }
       });
     });
   });
