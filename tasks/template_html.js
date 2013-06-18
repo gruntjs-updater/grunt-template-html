@@ -27,30 +27,46 @@ module.exports = function(grunt) {
       data.options.partials = _.extend(data.options.partials || {}, _.object(partials,partials));
     }
 
-     if (data.data) {
+    if (data.data) {
       data.options.data = _.extend(data.options.data || {}, grunt.file.readJSON(data.data));
-     }
+    }
+    grunt.util.async.forEachSeries(this.files, function(f, nextFileObj) {
+      var destFile = f.dest;
 
-    var i = 0, length = this.filesSrc.length;
-    this.files.forEach(function(f) {
-      var dest = f.dest,
-          src = f.src[0];
+      var files = f.src.filter(function(filepath) {
+        // Warn on and remove invalid source files (if nonull was set).
+        if (!grunt.file.exists(filepath)) {
+          grunt.log.warn('Source file "' + filepath + '" not found.');
+          return false;
+        } else {
+          return true;
+        }
+      });
 
-      consolidate[data.engine](src, data.options, function(err, html){
+      if (files.length === 0) {
+        if (f.src.length < 1) {
+          grunt.log.warn('Destination not written because no source files were found.');
+        }
+
+        // No src files, goto next target. Warn would have been issued above.
+        return nextFileObj();
+      }
+
+      var srcFile = f.src.pop();
+      var options = _.clone(data.options, true);
+      //console.log(options);
+      consolidate[data.engine](srcFile, options, function(err, html){
         if (err)
         {
           grunt.log.error(err);
           done(false);
         }
 
-        grunt.file.write(dest, html);
-        grunt.log.writeln("HTML written to '"+ dest +"'");
-        i++;
-        if (i === length){
-          done(true);
-        }
+        grunt.file.write(destFile, html);
+        grunt.log.writeln("HTML written to '"+ destFile +"'");
+        nextFileObj();
       });
-    });
+    }, done);
   });
 
 };
