@@ -35,10 +35,16 @@
     "handlebars": "~1.0.10"
   },
   "peerDependencies": {
-    "grunt": "~0.4.1"
+    "grunt": ">=0.4.0"
   },
   "keywords": [
-    "gruntplugin", "template", "html", "jade", "ejs", "handlebars", "mustache"
+    "gruntplugin",
+    "template",
+    "html",
+    "jade",
+    "ejs",
+    "handlebars",
+    "mustache"
   ],
   "dependencies": {
     "consolidate": "~0.9.0"
